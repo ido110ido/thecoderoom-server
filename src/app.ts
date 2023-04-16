@@ -7,18 +7,18 @@ import { Server } from "socket.io";
 import cors from "cors";
 const app = express();
 require("dotenv").config();
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.ORIGIN, // set the allowed origin from env variable
+  })
+);
 app.use(router);
 connectToDB();
 const server = http.createServer(app);
-const io = new Server(server, {
-  cors: {
-    origin: process.env.ORIGIN,
-    methods: ["GET", "POST"],
-  },
-});
+const io = new Server(server);
 
 io.on("connection", (socket: any) => {
   let readOnlyMode = false; // create a flag to track if the user is in read-only mode
