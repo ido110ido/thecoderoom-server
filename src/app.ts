@@ -1,10 +1,10 @@
 import bodyParser from "body-parser";
 import router from "./index";
 import { connectToDB } from "./connection";
-const express = require("express");
-const http = require("http");
-const { Server } = require("socket.io");
-const cors = require("cors");
+import express from "express";
+import http from "http";
+import { Server } from "socket.io";
+import cors from "cors";
 const app = express();
 require("dotenv").config();
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -27,7 +27,7 @@ io.on("connection", (socket: any) => {
     socket.join(room);
 
     // check if this is the first user joining the room and emit read_only_mode if so
-    if (io.sockets.adapter.rooms.get(room).size === 1) {
+    if (io.sockets.adapter.rooms.get(room)?.size === 1) {
       readOnlyMode = true;
       socket.emit("read_only_mode");
     }
