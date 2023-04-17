@@ -5,20 +5,33 @@ import express from "express";
 import http from "http";
 import { Server } from "socket.io";
 import cors from "cors";
+
 const app = express();
 require("dotenv").config();
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+app.use(
+  cors({
+    origin: "https://thecoderoom.onrender.com",
+  })
+);
+
 app.use(router);
-app.use(cors());
 connectToDB();
+
 const server = http.createServer(app);
+
 const io = new Server(server, {
   cors: {
-    origin: "*",
+    origin: "https://thecoderoom.onrender.com",
+    methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type"],
+    credentials: true,
   },
 });
+
 io.on("connection", (socket: any) => {
   let readOnlyMode = false; // create a flag to track if the user is in read-only mode
 
@@ -38,6 +51,7 @@ io.on("connection", (socket: any) => {
       socket.broadcast.to(data.roomId).emit("updated_code", data);
     }
   });
+
   //user leave room
   socket.on("leave_room", (roomId: string) => {
     console.log(`User left room ${roomId}`);
