@@ -11,6 +11,7 @@ require("dotenv").config();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(router);
+app.use(cors());
 connectToDB();
 const server = http.createServer(app);
 const io = new Server(server, {
